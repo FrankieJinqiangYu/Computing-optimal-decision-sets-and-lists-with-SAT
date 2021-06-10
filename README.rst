@@ -24,5 +24,6 @@ Sparse decision sets can be constructed by running:
    $ mds.py -a sparse --lambda <float> -s glucose3 -v <dataset.csv>
 
 Here, the value of ``'--lambda'`` is the regularization cost parameter, whichequals 0.005 *by default*. It indicates how much adding a literal/rule to the
-decision set costs with respect to the overall accuracy increase (see `the paper<https://alexeyignatiev.github.io/assets/pdf/yisb-cp20-preprint.pdf>`__
+decision set costs with respect to the overall accuracy increase (see `the paper
+<https://alexeyignatiev.github.io/assets/pdf/yisb-cp20-preprint.pdf>`__
 for details).
