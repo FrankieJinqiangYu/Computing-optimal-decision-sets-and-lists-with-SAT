@@ -1,7 +1,7 @@
 Learning optimal decision lists with SAT
 -------------------------------------------------------------
 
-*dlsat* is our MaxSAT-based approach to minimizing the total number of literals used in the decision list. An example of using the script to compute a complete perfect decision list is as follows:
+*dlsat* is the MaxSAT-based approach in our paper Learning Optimal Decision Sets and Lists with SAT to minimizing the total number of literals used in the decision list. An example of using the script to compute a complete perfect decision list is as follows:
 
 ::
 
