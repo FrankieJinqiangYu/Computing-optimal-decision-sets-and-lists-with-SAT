@@ -43,7 +43,7 @@ An example of learning a separated perfect decision list is as follows:
 
 ::
 
-   $dlsolve.py --maxsat --sep -o maj -a <str> <dataset.csv>
+   $ dlsolve.py --maxsat --sep -o maj -a <str> <dataset.csv>
    
 The value of ``'-a'`` is either *asc* or *desc*, where the class order in the decision list is ascending/ descending regarding the number of items in each class.
 
