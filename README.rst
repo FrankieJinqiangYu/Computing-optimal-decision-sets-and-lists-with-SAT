@@ -27,7 +27,7 @@ Sparse decision sets can be constructed by running:
 
 Here, the value of ``'--lambda'`` is the regularization cost parameter, whichequals 0.005 *by default*. It indicates how much adding a literal/rule to the decision set costs with respect to the overall accuracy increase.
 
-There are many other approaches to learning optimal decisoin sets, detalied in `__minds <https://github.com/alexeyignatiev/minds>`__.
+There are many other approaches to learning optimal decisoin sets, detalied in `minds <https://github.com/alexeyignatiev/minds>`__.
 
 
 The approach to learning optimal decision lists with SAT
