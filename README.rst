@@ -7,7 +7,9 @@ Decision sets and decision lists are two examples of the most easily explainable
 
 .. [1] Here the size can be defined as the number of rules of the decision set, or the total number of literals used.
 
-Our `recent CP'20 paper<https://alexeyignatiev.github.io/assets/pdf/yisb-cp20-preprint.pdf>`__ proposed a novel SAT- and MaxSAT-based approach to minimizing the total numberof literals used in the target decision set. An example of how this can be done using the ``mds.py`` script follows:
+Our `recent CP'20 paper
+<https://alexeyignatiev.github.io/assets/pdf/yisb-cp20-preprint.pdf>`__
+proposed a novel SAT- and MaxSAT-based approach to minimizing the total numberof literals used in the target decision set. An example of how this can be done using the ``mds.py`` script follows:
 
 ::
 
@@ -22,4 +24,5 @@ Sparse decision sets can be constructed by running:
    $ mds.py -a sparse --lambda <float> -s glucose3 -v <dataset.csv>
 
 Here, the value of ``'--lambda'`` is the regularization cost parameter, whichequals 0.005 *by default*. It indicates how much adding a literal/rule to the
-decision set costs with respect to the overall accuracy increase (see `the paper<https://alexeyignatiev.github.io/assets/pdf/yisb-cp20-preprint.pdf>`__ for details).
+decision set costs with respect to the overall accuracy increase (see `the paper<https://alexeyignatiev.github.io/assets/pdf/yisb-cp20-preprint.pdf>`__
+for details).
