@@ -4,12 +4,14 @@
 ## mp92.py
 ##
 ##  Created on: Dec 20, 2017
-##      Author: Filipe Pereira, Alexey S. Ignatiev
-##      E-mail: filipe.pereira.1995@gmail.com, aignatiev@ciencias.ulisboa.pt
+##      Author: Filipe Pereira, Alexey Ignatiev
+##      E-mail: filipe.pereira.1995@gmail.com, alexey.ignatiev@monash.edu
 ##
 
 #
 #==============================================================================
+from minds.rule import Rule
+from minds.satr import SATRules
 import os
 from pysat.card import *
 from pysat.examples.lbx import LBX
@@ -17,14 +19,13 @@ from pysat.examples.rc2 import RC2
 from pysat.formula import CNF, WCNF
 from pysat.solvers import Solver
 import resource
-from sat import SAT
 import six
 from six.moves import range
 import sys
 
 #
 #==============================================================================
-class MP92(SAT, object):
+class MP92Rules(SATRules, object):
     """
         Class implementing the approach from the MP'92 paper.
     """
@@ -34,7 +35,7 @@ class MP92(SAT, object):
             Constructor.
         """
 
-        super(MP92, self).__init__(data, options)
+        super(MP92Rules, self).__init__(data, options)
 
     def encode(self, label, nof_terms):
         """
@@ -336,17 +337,18 @@ class MP92(SAT, object):
             for r in range(1, self.nof_feats + 1):
                 if model[self.pvar(j, r) - 1] < 0:
                     id_orig = self.ffmap.opp[r - 1]
-                    name, val = self.data.fvmap.opp[id_orig]
-                    premise.append('\'{0}: {1}\''.format(name, val))
+                    premise.append(id_orig)
                 elif model[self.nvar(j, r) - 1] < 0:
                     id_orig = self.ffmap.opp[r - 1]
-                    name, val = self.data.fvmap.opp[id_orig]
-                    premise.append('not \'{0}: {1}\''.format(name, val))
+                    premise.append(-id_orig)
+
+            # creating the rule
+            rule = Rule(fvars=premise, label=label, mapping=self.data.fvmap)
 
             if self.options.verb:
-                print('c1 cover: {0} => {1}'.format(', '.join(premise), ': '.join(self.data.fvmap.opp[label])))
+                print('c1 cover:', str(rule))
 
-            self.covrs[label].append(premise)
-            self.cost += len(premise)
+            self.covrs[label].append(rule)
+            self.cost += len(rule)
 
         return self.covrs

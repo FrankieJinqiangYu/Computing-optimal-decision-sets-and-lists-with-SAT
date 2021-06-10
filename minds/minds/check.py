@@ -4,8 +4,8 @@
 ## check.py
 ##
 ##  Created on: Dec 3, 2017
-##      Author: Alexey S. Ignatiev
-##      E-mail: aignatiev@ciencias.ulisboa.pt
+##      Author: Alexey Ignatiev
+##      E-mail: alexey.ignatiev@monash.edu
 ##
 
 #

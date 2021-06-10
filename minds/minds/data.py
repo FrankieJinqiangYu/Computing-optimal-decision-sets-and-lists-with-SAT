@@ -4,8 +4,8 @@
 ## data.py
 ##
 ##  Created on: Sep 20, 2017
-##      Author: Alexey S. Ignatiev
-##      E-mail: aignatiev@ciencias.ulisboa.pt
+##      Author: Alexey Ignatiev
+##      E-mail: alexey.ignatiev@monash.edu
 ##
 
 #
@@ -27,8 +27,8 @@ class Data(object):
         Class for representing data (transactions).
     """
 
-    def __init__(self, filename=None, fpointer=None, mapfile=None,
-            separator=' ', ranges=None):
+    def __init__(self, filename=None, fpointer=None, dataframe=None,
+            names=None, mapfile=None, separator=' ', ranges=None):
         """
             Constructor and parser.
         """
@@ -54,19 +54,23 @@ class Data(object):
         if filename:
             if filename.endswith('.gz'):
                 with gzip.open(filename, 'rt') as fp:
-                    self.parse(fp, separator)
+                    self.parse_fp(fp, separator)
             else:
                 with open(filename, 'r') as fp:
-                    self.parse(fp, separator)
+                    self.parse_fp(fp, separator)
         elif fpointer:
-            self.parse(fpointer, separator)
+            self.parse_fp(fpointer, separator)
+        elif dataframe is not None:
+            self.parse_dframe(dataframe, names=names)
+
+        self.process_data()
 
         if self.mname:
             self.read_orig_values()
 
-    def parse(self, fp, separator):
+    def parse_fp(self, fp, separator):
         """
-            Parse input file.
+            Parse input CSV file.
         """
 
         # reading data set from file
@@ -90,6 +94,67 @@ class Data(object):
                     self.feats[i].add(f)
             self.samps.append(sample)
             self.wghts.append(w)
+
+    def parse_dframe(self, dataframe, names=None):
+        """
+            Parse input dataframe.
+        """
+
+        datax = None  # dummy flag
+
+        if type(dataframe) == list and len(dataframe) == 2:
+            # we are dealing with datax and datay
+            datax, datay = dataframe
+            assert len(datax) == len(datay), 'Data length mismatch'
+
+        # parsing feature names
+        if names:
+            if datax:
+                nofcols = len(datax.columns) + len(datay.columns)
+            else:
+                nofcols = len(dataframe.columns)
+
+            assert len(names) == nofcols, 'Names and data columns mismatch'
+            self.names = names
+        else:
+            # process names from the dataframe
+            self.names = [name for name in dataframe.columns]
+
+        # initialise sets of feature values
+        self.feats = [set([]) for n in self.names]
+
+        # filling name to id mapping
+        self.nm2id = {name: i for i, name in enumerate(self.names)}
+
+        # training samples and their weights to be stored here
+        self.samps, self.wghts = [], []
+
+        if datax:
+            # we are dealing with explicit datax and datay
+            # extracting the samples
+            samples = []
+            for row in range(len(datax)):
+                samples.append(tuple([val for val in datax.loc[row]] + [datay.loc[row]]))
+        else:
+            assert type(dataframe) == pandas.DataFrame, 'Unexpected dataframe type'
+
+            # extracting the samples
+            samples = []
+            for row in range(len(dataframe)):
+                samples.append(tuple([val for val in dataframe.loc[row]]))
+
+        # reading all samples in the weighted manner
+        for sample, w in six.iteritems(collections.Counter(samples)):
+            for i, f in enumerate(sample):
+                if f:
+                    self.feats[i].add(f)
+            self.samps.append(sample)
+            self.wghts.append(w)
+
+    def process_data(self):
+        """
+            Process data and construct all the necessary internals.
+        """
 
         # direct and opposite mappings for items
         idpool = itertools.count(start=1)

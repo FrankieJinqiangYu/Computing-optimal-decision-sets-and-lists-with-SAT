@@ -4,8 +4,8 @@
 ## dscheck.py
 ##
 ##  Created on: Jan 10, 2018
-##      Author: Alexey S. Ignatiev
-##      E-mail: aignatiev@ciencias.ulisboa.pt
+##      Author: Alexey Ignatiev
+##      E-mail: alexey.ignatiev@monash.edu
 ##
 
 #

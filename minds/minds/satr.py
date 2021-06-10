@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 #-*- coding:utf-8 -*-
 ##
-## sat.py
+## satr.py
 ##
 ##  Created on: Jan 9, 2018
-##      Author: Alexey S. Ignatiev
-##      E-mail: aignatiev@ciencias.ulisboa.pt
+##      Author: Alexey Ignatiev
+##      E-mail: alexey.ignatiev@monash.edu
 ##
 
 #
@@ -13,6 +13,7 @@
 from __future__ import print_function
 import collections
 import itertools
+from minds.rule import Rule
 import os
 from pysat.card import *
 from pysat.examples.lbx import LBX
@@ -28,7 +29,7 @@ import sys
 
 #
 #==============================================================================
-class SAT(object):
+class SATRules(object):
     """
         Class implementing the new SAT-based approach.
     """
@@ -542,17 +543,18 @@ class SAT(object):
             for r in range(1, self.nof_feats + 1):
                 if model[self.dvar0(j, r) - 1] > 0:
                     id_orig = self.ffmap.opp[r - 1]
-                    name, val = self.data.fvmap.opp[id_orig]
-                    premise.append('\'{0}: {1}\''.format(name, val))
+                    premise.append(id_orig)
                 elif model[self.dvar1(j, r) - 1] > 0:
                     id_orig = self.ffmap.opp[r - 1]
-                    name, val = self.data.fvmap.opp[id_orig]
-                    premise.append('not \'{0}: {1}\''.format(name, val))
+                    premise.append(-id_orig)
+
+            # creating the rule
+            rule = Rule(fvars=premise, label=label, mapping=self.data.fvmap)
 
             if self.options.verb:
-                print('c1 cover:', '{0} => {1}'.format(', '.join(premise), ': '.join(self.data.fvmap.opp[label])))
+                print('c1 cover:', str(rule))
 
-            self.covrs[label].append(premise)
-            self.cost += len(premise)
+            self.covrs[label].append(rule)
+            self.cost += len(rule)
 
         return self.covrs

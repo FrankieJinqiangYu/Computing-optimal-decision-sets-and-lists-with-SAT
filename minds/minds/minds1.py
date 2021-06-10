@@ -4,8 +4,8 @@
 ## minds1.py
 ##
 ##  Created on: Jan 16, 2018
-##      Author: Alexey S. Ignatiev
-##      E-mail: aignatiev@ciencias.ulisboa.pt
+##      Author: Alexey Ignatiev
+##      E-mail: alexey.ignatiev@monash.edu
 ##
 
 #
@@ -14,6 +14,8 @@ from __future__ import print_function
 import collections
 import itertools
 import math
+from minds.rule import Rule
+from minds.satr import SATRules
 import os
 from pysat.card import *
 from pysat.examples.lbx import LBX
@@ -21,7 +23,6 @@ from pysat.examples.rc2 import RC2
 from pysat.formula import CNF, WCNF
 from pysat.solvers import Solver
 import resource
-from sat import SAT
 import socket
 import six
 from six.moves import range
@@ -30,7 +31,7 @@ import sys
 
 #
 #==============================================================================
-class MinDS1(SAT, object):
+class MinDS1Rules(SATRules, object):
     """
         Class implementing the new SAT-based approach.
     """
@@ -40,7 +41,7 @@ class MinDS1(SAT, object):
             Constructor.
         """
 
-        super(MinDS1, self).__init__(data, options)
+        super(MinDS1Rules, self).__init__(data, options)
 
     def compute(self):
         """
@@ -507,12 +508,10 @@ class MinDS1(SAT, object):
             for r in range(1, self.nof_feats + 1):
                 if model[self.dvar0(j, r) - 1] > 0:
                     id_orig = self.ffmap.opp[r - 1]
-                    name, val = self.data.fvmap.opp[id_orig]
-                    premise.append('\'{0}: {1}\''.format(name, val))
+                    premise.append(id_orig)
                 elif model[self.dvar1(j, r) - 1] > 0:
                     id_orig = self.ffmap.opp[r - 1]
-                    name, val = self.data.fvmap.opp[id_orig]
-                    premise.append('not \'{0}: {1}\''.format(name, val))
+                    premise.append(-id_orig)
 
             if self.nof_labls == 2:
                 label = self.labels[0 if model[self.cvar(j, 1) - 1] > 0 else 1]
@@ -524,10 +523,13 @@ class MinDS1(SAT, object):
                 else:
                     assert False, 'No class label found in the model'
 
-            if self.options.verb:
-                print('c1 cover:', '{0} => {1}'.format(', '.join(premise), ': '.join(self.data.fvmap.opp[label])))
+            # creating the rule
+            rule = Rule(fvars=premise, label=label, mapping=self.data.fvmap)
 
-            self.covrs[label].append(premise)
-            self.cost += len(premise)
+            if self.options.verb:
+                print('c1 cover:', str(rule))
+
+            self.covrs[label].append(rule)
+            self.cost += len(rule)
 
         return self.covrs

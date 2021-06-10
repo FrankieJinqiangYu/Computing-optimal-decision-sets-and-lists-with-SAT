@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #-*- coding:utf-8 -*-
 ##
-## mxsatlits3.py
+## mxsatsp.py
 ##
 ##  Created on: Apr 28, 2020
 ##      Author: Alexey Ignatiev
@@ -15,6 +15,8 @@ import collections
 import decimal
 import itertools
 import math
+from minds.rule import Rule
+from minds.satl import SATLits
 import os
 from pysat.card import *
 from pysat.examples.lbx import LBX
@@ -22,7 +24,6 @@ from pysat.examples.rc2 import RC2, RC2Stratified
 from pysat.formula import CNF, WCNF
 from pysat.solvers import Solver
 import resource
-from satlits import SATLits
 import socket
 import six
 from six.moves import range
@@ -31,7 +32,7 @@ import sys
 
 #
 #==============================================================================
-class MaxSATLits4(SATLits, object):
+class MaxSATSparse(SATLits, object):
     """
         Class implementing the new SAT-based approach.
     """
@@ -41,7 +42,7 @@ class MaxSATLits4(SATLits, object):
             Constructor.
         """
 
-        super(MaxSATLits4, self).__init__(data, options)
+        super(MaxSATSparse, self).__init__(data, options)
 
         # total number of missclassifications
         self.nof_misses = 0
@@ -332,37 +333,28 @@ class MaxSATLits4(SATLits, object):
 
         premise = []
 
-        # for i in self.samps[label]:
-        #     cvar = self.covered(3, i + 1)
-        #     print('m', cvar, '<=>', self.idpool.obj(cvar), model[cvar] > 0)
-        # for i, o in self.idpool.id2obj.items():
-        #     if model[i] > 0:
-        #         print('m', i, '<=>', o, model[i] > 0)
-
-        # print(self.data.samps)
-
         for j in range(1, self.nof_lits + 1):
             for r in range(1, self.nof_feats + 2):
                 if model[self.feat(j, r)] > 0:
                     if model[self.leaf(j)] > 0:
-                        self.covrs[label].append(premise)
-                        self.cost += len(premise)
+                        # creating the rule
+                        rule = Rule(fvars=premise, label=label,
+                                mapping=self.data.fvmap)
+
+                        self.covrs[label].append(rule)
+                        self.cost += len(rule)
 
                         if self.options.verb:
-                            if not premise:
-                                # this looks like a default rule
-                                premise = ['true']
-                            else:
-                                print('c1 cover:', '{0} => {1}'.format(', '.join(premise), ': '.join(self.data.fvmap.opp[label])))
+                            if premise:  # if not a default rule (those aren't printed here)
+                                print('c1 cover:', str(rule))
 
                         premise = []
                     else:
                         id_orig = self.ffmap.opp[r - 1]
-                        name, val = self.data.fvmap.opp[id_orig]
 
                         if model[self.sign(j)] * id_orig > 0:
-                            premise.append('\'{0}: {1}\''.format(name, val))
+                            premise.append(id_orig)
                         else:
-                            premise.append('not \'{0}: {1}\''.format(name, val))
+                            premise.append(-id_orig)
 
         return self.covrs

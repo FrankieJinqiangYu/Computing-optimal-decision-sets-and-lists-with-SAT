@@ -4,8 +4,8 @@
 ## options.py
 ##
 ##  Created on: Sep 20, 2017
-##      Author: Alexey S. Ignatiev
-##      E-mail: aignatiev@ciencias.ulisboa.pt
+##      Author: Alexey Ignatiev
+##      E-mail: alexey.ignatiev@monash.edu
 ##
 
 #
@@ -39,14 +39,14 @@ class Options(object):
         Class for representing command-line options.
     """
 
-    def __init__(self, command):
+    def __init__(self, command=None):
         """
             Constructor.
         """
 
         self.accuracy = 100.0
         self.am1 = False
-        self.approach = 'pbased'
+        self.approach = '2stage'
         self.approx = 0
         self.blo = False
         self.bsymm = False
@@ -55,11 +55,9 @@ class Options(object):
         self.enc = 'cardn'
         self.exhaust = False
         self.files = None
-        self.filter = True  # filtering is turned on, i.e. this option is useless
         self.solver = 'm22'
         self.primer = 'sorted'
         self.cover = 'mxsat'
-        self.indprime = False
         self.lambda_ = '0.005'
         self.lambda_adaptive = False
         self.mapfile = None
@@ -92,7 +90,7 @@ class Options(object):
 
         try:
             opts, args = getopt.getopt(command[1:],
-                                    '1a:bc:de:fhil:mnp:r:s:t:u:vwx',
+                                    '1a:bBc:C:de:hl:mnp:r:s:t:u:vwx',
                                     ['accy=',
                                         'am1',
                                         'approach=',
@@ -106,9 +104,7 @@ class Options(object):
                                         'do-cld',
                                         'enc=',
                                         'exhaust'
-                                        'filter',
                                         'help',
-                                        'indprime',
                                         'lambda=',
                                         'lambda-adapt',
                                         'map-file=',
@@ -144,11 +140,11 @@ class Options(object):
                 self.approx = int(arg)
             elif opt in ('-b', '--blo'):
                 self.blo = True
-            elif opt == '--bsymm':
+            elif opt in ('-B', '--bsymm'):
                 self.bsymm = True
             elif opt in ('-c', '--class'):
                 self.to_compute = str(arg)
-            elif opt == '--cover':
+            elif opt in ('-C', '--cover'):
                 self.cover = str(arg)
             elif opt == '--cdump':
                 self.cdump = True
@@ -158,14 +154,9 @@ class Options(object):
                 self.use_cld = True
             elif opt in ('-e', '--enc'):
                 self.enc = str(arg)
-            elif opt in ('-f', '--filter'):
-                self.filter = True
             elif opt in ('-h', '--help'):
                 self.usage()
                 sys.exit(0)
-            elif opt in ('-i', '--indprime'):
-                self.indprime = True
-                self.filter = True  # filter all unnecessary primes
             elif opt in ('-l', '--plimit'):
                 self.plimit = int(arg)
                 if self.plimit == 'best':
@@ -213,11 +204,6 @@ class Options(object):
             else:
                 assert False, 'Unhandled option: {0} {1}'.format(opt, arg)
 
-        if self.approach == 'pbased' and self.plimit == -1:
-            self.plimit = 0
-        elif self.approach == 'pgreedy' and self.plimit == 0:
-            self.plimit = -1
-
         self.enc = encmap[self.enc]
         self.files = args
 
@@ -232,32 +218,28 @@ class Options(object):
         print('        --accy=<float>             Target at least this accuracy')
         print('                                   Available values: [0.0 .. 100.0] (default = 100.0)')
         print('        -a, --approach=<string>    Approach to use')
-        print('                                   Available values: mxsat, mxsatlits3, mxsatlits4, minds1, mp92, pbased, pgreedy, phybrid, sat, satlits, satlits3 (default = pbased)')
+        print('                                   Available values: mxsatl, mxsatls, sparse, minds1, mp92, satr, satl, satls (default = 2stage)')
         print('        --approx=<int>             Approximate set cover with at most k attempts')
         print('                                   Available values: [0 .. INT_MAX] (default = 0)')
         print('        -b, --blo                  Apply BLO when solving MaxSAT')
-        print('        --bsymm                    Use symmetry breaking constraints in SAT-based approaches')
+        print('        -B, --bsymm                Use symmetry breaking constraints in SAT-based approaches')
         print('        -c, --class=<string>       Class to compute')
         print('                                   Available values: all, best, any-specific-label (default = all)')
         print('                                   Note: if more than one class is chosen and the approach is sat/mp92/minds1,')
         print('                                         the tool pretends that other classes do not exist')
         print('        --cdump                    Dump largest consistent subset of input samples')
-        print('        --cover=<string>           Approach to apply for computing a prime cover')
+        print('        -C, --cover=<string>       Approach to apply for computing a prime cover')
         print('                                   Available values: mxsat, cplex, gurobi (default = mxsat)')
         print('        -d, --do-cld               Do D clause calls')
         print('        --default                  Print default rule')
         print('        -e, --enc=<string>         Encoding to use')
         print('                                   Available values: cardn, kmtot, mtot, sortn, tot (default = cardn)')
-        print('        -f, --filter               Filter out all meaningless primes')
         print('        -h, --help')
-        print('        -i, --indprime             Compute primes for each sample separately')
         print('        -l, --plimit=<int>         Compute at most this number of primes per sample')
-        print('                                   Available values: [0 .. INT_MAX], best')
-        print('                                   Note: default for \'pbased\' is 0; default for \'pgreedy\' is best')
-        print('        --lambda=<float>           Parameter lambda used in the MaxSATLits4 model')
+        print('                                   Available values: [0 .. INT_MAX] (default: 0)')
+        print('        --lambda=<float>           Parameter lambda used in the sparse model')
         print('                                   Available values: [0, FLOAT_MAX], 0.005')
-        print('                                   Note: default for \'pbased\' is 0; default for \'pgreedy\' is best')
-        print('        --lambda-adapt             Use adaptive lambda used in the MaxSATLits4 model')
+        print('        --lambda-adapt             Use adaptive lambda used in the sparse model')
         print('        --map-file=<string>        Path to a file containing a mapping to original feature values. (default: none)')
         print('        --mcmd=<string>            Command to run a MaxSAT solver')
         print('        -m, --minz                 Use unsatisfiable core heuristic minimization in RC2')

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #-*- coding:utf-8 -*-
 ##
-## mxsat.py
+## mxsatl.py
 ##
 ##  Created on: May 7, 2020
 ##      Author: Alexey Ignatiev
@@ -15,6 +15,8 @@ import collections
 import decimal
 import itertools
 import math
+from minds.rule import Rule
+from minds.satr import SATRules
 import os
 from pysat.card import *
 from pysat.examples.lbx import LBX
@@ -22,7 +24,6 @@ from pysat.examples.rc2 import RC2, RC2Stratified
 from pysat.formula import CNF, WCNF
 from pysat.solvers import Solver
 import resource
-from sat import SAT
 import socket
 import six
 from six.moves import range
@@ -31,7 +32,7 @@ import sys
 
 #
 #==============================================================================
-class MaxSAT(SAT, object):
+class MaxSATLits(SATRules, object):
     """
         Class implementing the new SAT-based approach.
     """
@@ -41,7 +42,7 @@ class MaxSAT(SAT, object):
             Constructor.
         """
 
-        super(MaxSAT, self).__init__(data, options)
+        super(MaxSATLits, self).__init__(data, options)
 
         # total number of missclassifications
         self.nof_misses = 0
@@ -351,17 +352,18 @@ class MaxSAT(SAT, object):
             for r in range(1, self.nof_feats + 1):
                 if model[self.dvar0(j, r)] > 0:
                     id_orig = self.ffmap.opp[r - 1]
-                    name, val = self.data.fvmap.opp[id_orig]
-                    premise.append('\'{0}: {1}\''.format(name, val))
+                    premise.append(id_orig)
                 elif model[self.dvar1(j, r)] > 0:
                     id_orig = self.ffmap.opp[r - 1]
-                    name, val = self.data.fvmap.opp[id_orig]
-                    premise.append('not \'{0}: {1}\''.format(name, val))
+                    premise.append(-id_orig)
+
+            # creating the rule
+            rule = Rule(fvars=premise, label=label, mapping=self.data.fvmap)
 
             if self.options.verb:
-                print('c1 cover:', '{0} => {1}'.format(', '.join(premise), ': '.join(self.data.fvmap.opp[label])))
+                print('c1 cover:', str(rule))
 
-            self.covrs[label].append(premise)
-            self.cost += len(premise)
+            self.covrs[label].append(rule)
+            self.cost += len(rule)
 
         return self.covrs
