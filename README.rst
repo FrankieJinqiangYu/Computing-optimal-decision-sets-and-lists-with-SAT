@@ -1,4 +1,5 @@
-# Computing-optimal-decision-sets-and-lists-with-SAT
+Computing-optimal-decision-sets-and-lists-with-SAT
+=============================================================
 
 *minds* is a Python toolkit, which can be used for computing minimum size
 decisions sets, i.e. unordered sets of *if-then* rules [1]_. The toolkit
