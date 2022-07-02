@@ -32,14 +32,14 @@ An example of using the script to compute a complete perfect decision list is as
 
 ::
 
-   $ optdl.py -a perfect --mode complete -v <dataset.csv>
+   $ optdl.py -s glucose3 -a perfect --mode complete -v <dataset.csv>
 
 
 An example of learning a separated perfect decision list is as follows:
 
 ::
 
-   $ optdl.py -a perfect --clsorder maj --mode sep -v <dataset.csv>
+   $ optdl.py -s glucose3 -a perfect --clsorder maj --mode sep -v <dataset.csv>
    
 ``--clsorder`` enables to tool to sort classes by the number of items in each order. By default, it sorts in the ascending order. 
 ``--clsdown`` is optional. Activating this option such that classes are sorted in the descending order.
@@ -50,13 +50,13 @@ To compute complete sparse decision lists:
 
 ::
 
-   $ optdl.py --approx 1 -a sparse --lambda 0.005 --mode complete -v <dataset.csv> 
+   $ optdl.py -s glucose3 --approx 1 -a sparse --lambda 0.005 --mode complete -v <dataset.csv> 
 
 To compute separated sparse decision lists:
 
 ::
 
-   $ optdl.py --approx 1 -a sparse --lambda 0.005  --clsorder maj --mode sep -v <dataset.csv> 
+   $ optdl.py -s glucose3 --approx 1 -a sparse --lambda 0.005  --clsorder maj --mode sep -v <dataset.csv> 
    
 Here, the value of ``--lambda`` is the regularization cost parameter, which equals 0.005 *by default*. It indicates how much adding a literal/rule to the decision list costs with respect to the overall accuracy increase.
 
