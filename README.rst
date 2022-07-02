@@ -39,7 +39,7 @@ An example of learning a separated perfect decision list is as follows:
 
 ::
 
-   $ dlsolve.py -a perfect --clsorder maj --mode sep -v <dataset.csv>
+   $ optdl.py -a perfect --clsorder maj --mode sep -v <dataset.csv>
    
 ``--clsorder`` enables to tool to sort classes by the number of items in each order. By default, it sorts in the ascending order. 
 ``--clsdown`` is optional. Activating this option such that classes are sorted in the descending order.
