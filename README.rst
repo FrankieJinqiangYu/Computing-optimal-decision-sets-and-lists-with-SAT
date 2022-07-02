@@ -67,7 +67,7 @@ Tweaking the MaxSAT solver
 As some of the developed algorithms apply MaxSAT solving, it is sometimes
 important to get the best performance of the underlying MaxSAT solver. The
 ``optdl.py`` tool provides a number of command-line options to tweak the
-internal heuristics of the award-winning MaxSAT solver RC2 used in *minds*:
+internal heuristics of the award-winning MaxSAT solver RC2 used in *dlsat*:
 
 -  ``-1`` - to detect AtMost1 constraints
 -  ``-b`` - to apply Boolean lexicographic optimization (BLO)
