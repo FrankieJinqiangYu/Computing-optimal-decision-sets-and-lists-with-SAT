@@ -1,12 +1,28 @@
 Learning optimal decision lists with SAT
 -------------------------------------------------------------
 
-*dlsat* is the MaxSAT-based approach in our paper Learning Optimal Decision Sets and Lists with SAT to minimizing the total number of literals used in the decision list. An example of using the script to compute a complete perfect decision list is as follows:
+*dlsat* is the MaxSAT-based approach in our paper 
+`Learning Optimal Decision Sets and Lists with SAT 
+`<https://www.jair.org/index.php/jair/article/download/12719/26747/>`_
+to minimizing the total number of literals used in the decision list. 
+
+**Getting Started**
+`pandas
+<https://pandas.pydata.org/>`_.
+`PySAT
+<https://github.com/pysathq/pysat/>`_.
+
+
+
+An example of using the script to compute a complete perfect decision list is as follows:
+
+
 
 ::
 
    $ dlsolve.py --maxsat <dataset.csv>
-   
+
+
 An example of learning a separated perfect decision list is as follows:
 
 ::
