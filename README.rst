@@ -1,7 +1,7 @@
 Learning Optimal Decision Lists with SAT
 =============================================================
 
-*dlsat* is the MaxSAT-based approach introduced in our paper 
+*dlsat* is the MaxSAT-based approach introduced in the paper 
 `Learning Optimal Decision Sets and Lists with SAT
 <https://www.jair.org/index.php/jair/article/download/12719/26747/>`_
 to minimizing the total number of literals used in the decision list. 
