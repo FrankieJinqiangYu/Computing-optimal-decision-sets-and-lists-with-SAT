@@ -2,15 +2,16 @@ Learning optimal decision lists with SAT
 -------------------------------------------------------------
 
 *dlsat* is the MaxSAT-based approach in our paper 
-`Learning Optimal Decision Sets and Lists with SAT 
-`<https://www.jair.org/index.php/jair/article/download/12719/26747/>`_
+`Learning Optimal Decision Sets and Lists with SAT
+<https://www.jair.org/index.php/jair/article/download/12719/26747/>`_
 to minimizing the total number of literals used in the decision list. 
 
 **Getting Started**
 `pandas
-<https://pandas.pydata.org/>`_.
+<https://pandas.pydata.org/>`_
+
 `PySAT
-<https://github.com/pysathq/pysat/>`_.
+<https://github.com/pysathq/pysat/>`_
 
 
 
