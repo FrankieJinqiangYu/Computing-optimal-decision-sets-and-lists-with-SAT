@@ -9,6 +9,8 @@ to minimizing the total number of literals used in the decision list.
 Getting Started
 ---------------
 
+Before using *dlsat*, make sure you have the following Python packages installed:
+
 `pandas
 <https://pandas.pydata.org/>`_
 
@@ -19,7 +21,6 @@ Getting Started
 Usage
 -----
 
-Before using *dlsat*, make sure you have the following Python packages installed:
 
 ``optdl.py`` provides a number of command-line options. To see these options by running:
 
