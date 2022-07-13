@@ -160,6 +160,11 @@ class DLSolver():
         solver = RC2Stratified if self.options.approach == 'sparse' else RC2
         self.ordercls()
 
+        if self.options.approx:
+            self.lambda_ = int(math.ceil(sum(self.data.wghts) * float(self.options.lambda_)))
+        else:
+            self.lambda_ = sum(self.data.wghts) * decimal.Decimal(self.options.lambda_)
+
         self.time = 0.0
         self.nof_misses = 0
 
@@ -186,17 +191,10 @@ class DLSolver():
 
             self.all_samps = self.selected_samps.union(self.non_selected_samps)
 
-            wght = sum([self.data.wghts[i] for i in self.all_samps])
-
-            if self.options.approx:
-                self.lambda_ = int(math.ceil(wght * float(self.options.lambda_)))
-            else:
-                self.lambda_ = wght * decimal.Decimal(self.options.lambda_)
-
             if self.options.approach == 'sparse' and self.options.verb:
                 print('c1 1 lit == {0} misses'.format(1 / self.lambda_))
 
-            ubound = (self.nof_feats + 1) * wght
+            ubound = (self.nof_feats + 1) * sum(self.data.wghts)
 
             # iterative over the number of literals
             self.nof_lits = 2
